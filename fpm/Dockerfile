@@ -85,7 +85,7 @@ RUN set -eux; \
   rm -rf /var/lib/apt/lists/*; \
   rm -rf /tmp/* /var/tmp/*;
 
-## Set php configuration
+## Set php configuration overrides
 RUN { \
             echo 'opcache.enable_cli=1'; \
     } > /usr/local/etc/php/conf.d/opcache-recommended.ini ; \

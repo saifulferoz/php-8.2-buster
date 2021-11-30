@@ -1,6 +1,6 @@
 FROM php:8.1-rc-apache-buster
 
-MAINTAINER Roni Kumar Saha <roni.csed@gmail.com>
+LABEL org.opencontainers.image.authors="Roni Kumar Saha <roni.csed@gmail.com>"
 
 ENV APACHE_DOCUMENT_ROOT /var/www/public
 

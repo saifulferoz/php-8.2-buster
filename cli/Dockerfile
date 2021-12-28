@@ -31,7 +31,7 @@ RUN set -eux; \
         xfonts-base \
 	; \
 	\
-	curl -sL https://deb.nodesource.com/setup_11.x  | bash - ; \
+	curl -sL https://deb.nodesource.com/setup_16.x  | bash - ; \
   apt-get -y install nodejs; \
 	pecl install apcu; \
   pecl install yaml; \

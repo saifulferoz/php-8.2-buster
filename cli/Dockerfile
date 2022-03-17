@@ -1,4 +1,4 @@
-FROM php:8.1-cli-buster
+FROM php:8.1.3-cli-buster
 
 LABEL org.opencontainers.image.authors="Roni Kumar Saha <roni.csed@gmail.com>"
 

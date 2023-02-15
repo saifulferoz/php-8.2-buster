@@ -1,5 +1,5 @@
-# php-8.1-buster
-Docker image with php-8.1.10-buster
+# php-8.2-buster
+Docker image with php-8.2.0-buster
 
 All image contain following php extension, [wkhtmltopdf-0.12.6](https://github.com/wkhtmltopdf/wkhtmltopdf/) with patched QT, [merge2pdf](https://github.com/ajaxray/merge2pdf) and [composer](https://github.com/composer/composer).
 
@@ -27,17 +27,17 @@ All image contain following php extension, [wkhtmltopdf-0.12.6](https://github.c
 - iconv
 
 ## Image Variants
-### php-8.1-buster:cli
+### php-8.2-buster:cli
 This use the cli base image also contain nodejs and npm
 
-### php-8.1-buster:fpm
+### php-8.2-buster:fpm
 This use the fpm base image
 
-### php-8.1-buster:apache
+### php-8.2-buster:apache
 This use the apache base image
 
-### php-8.1-buster:dev
+### php-8.2-buster:dev
 This use the apache base image with xdebug enabled
 
-### php-8.1-buster:supervisor
+### php-8.2-buster:supervisor
 This use the fpm base image and set supervisor as entry point. Mount any supervisor config file as /etc/supervisor/conf.d/*.conf

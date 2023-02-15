@@ -1,6 +1,6 @@
-FROM php:8.1.10-cli-buster
+FROM php:8.2.0-apache-buster
 
-LABEL org.opencontainers.image.authors="Roni Kumar Saha <roni.csed@gmail.com>"
+LABEL org.opencontainers.image.authors="Saiful Islam Feroz <ferozcse@gmail.com>"
 
 ENV LD_LIBRARY_PATH=/usr/lib/instantclient
 

@@ -43,6 +43,7 @@ RUN set -eux; \
 	\
 	curl -sL https://deb.nodesource.com/setup_18.x  | bash - ; \
 	apt-get -y install nodejs; \
+	export MAKEFLAGS="-j$(nproc)"; \
 	pecl install apcu; \
 	pecl install yaml; \
 	pecl install igbinary; \

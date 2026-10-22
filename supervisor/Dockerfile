@@ -41,6 +41,7 @@ RUN set -eux; \
 	ttf-mscorefonts-installer \
 	; \
 	\
+	export MAKEFLAGS="-j$(nproc)"; \
 	pecl install apcu; \
 	pecl install yaml; \
 	pecl install igbinary; \

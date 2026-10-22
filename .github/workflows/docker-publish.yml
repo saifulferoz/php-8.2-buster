@@ -3,15 +3,24 @@ name: Docker
 on:
   push:
     branches:
+      - 8.2.x
       - main
-    paths:
-      - '**/Dockerfile'
+  workflow_dispatch:
+    inputs:
+      php_version:
+        description: 'PHP Version to build'
+        required: true
+        default: '8.2.35'
+
 jobs:
   push:
     runs-on: ubuntu-latest
-
+    strategy:
+      fail-fast: false
+      matrix:
+        image-variant: [ 'apache', 'cli', 'fpm', 'supervisor', 'dev' ]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -20,18 +29,35 @@ jobs:
 
       - name: Build and push the images
         run: |
-          for dockerFilePath in $(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} ${{ github.event.before }} | grep "Dockerfile");
-          do
-            folder=${dockerFilePath%"/Dockerfile"}
-            VERSION=${folder##*/}
+          VERSION=${{ matrix.image-variant }}
+          PHP_SHORT_VERSION=8.2
+          PHP_VERSION=${{ github.event.inputs.php_version || '8.2.35' }}
 
-            tmpName="image-$RANDOM"
-            cp -r fonts $folder/
-            docker build $folder --file $folder/Dockerfile --tag $tmpName
-            IMAGE_ID=${{ secrets.DOCKER_REGISTRY_URL }}/${{ secrets.IMAGE_NAME }}
+          tmpName="image-$RANDOM"
+          cp -r fonts $VERSION/
+          docker build $VERSION --file $VERSION/Dockerfile --tag $tmpName --build-arg PHP_VERSION=$PHP_VERSION
+          if [ $? -ne 0 ]; then 
+            echo "Docker build failed, for ${VERSION}-$PHP_VERSION"
+            exit 1
+          fi
+          DOCKER_REGISTRY="${{ secrets.DOCKER_REGISTRY_URL }}"
+          DOCKER_USER="${{ secrets.DOCKER_USERNAME || 'ferozcse' }}"
+          IMAGE_NAME="${{ secrets.IMAGE_NAME || 'php-8.2-buster' }}"
 
-            docker tag $tmpName $IMAGE_ID:$VERSION
-            docker push $IMAGE_ID:$VERSION
-            if [ "$VERSION" == "fpm" ]; then docker tag $tmpName $IMAGE_ID:latest; fi
-            if [ "$VERSION" == "fpm" ]; then docker push $IMAGE_ID:latest; fi
-          done;
+          if [ -n "$DOCKER_REGISTRY" ]; then
+            IMAGE_ID="${DOCKER_REGISTRY}/${DOCKER_USER}/${IMAGE_NAME}"
+          else
+            IMAGE_ID="${DOCKER_USER}/${IMAGE_NAME}"
+          fi
+
+          docker tag $tmpName $IMAGE_ID:${VERSION}-$PHP_VERSION
+          docker push $IMAGE_ID:${VERSION}-$PHP_VERSION
+          docker tag $tmpName $IMAGE_ID:${VERSION}-$PHP_SHORT_VERSION
+          docker push $IMAGE_ID:${VERSION}-$PHP_SHORT_VERSION
+          docker tag $tmpName $IMAGE_ID:${VERSION}
+          docker push $IMAGE_ID:${VERSION}
+
+          if [ "$VERSION" = "fpm" ]; then
+            docker tag $tmpName $IMAGE_ID:latest
+            docker push $IMAGE_ID:latest
+          fi

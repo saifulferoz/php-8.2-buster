@@ -18,6 +18,8 @@ RUN set -eux; \
 	elif [ -f /etc/apt/sources.list ]; then \
 	sed -i'.bak' 's/$/ contrib/' /etc/apt/sources.list; \
 	fi; \
+	echo "timeout = 15" >> /etc/wgetrc; \
+	echo "tries = 2" >> /etc/wgetrc; \
 	apt-get update && apt-get -y upgrade; \
 	apt-get install -y libaio1 wget unzip \
 	libicu-dev \

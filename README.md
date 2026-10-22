@@ -62,8 +62,8 @@ make build-supervisor
 
 ### 3. Using build.sh directly:
 ```bash
-./build.sh all 8.2.35 ronisaha/php-8.2-buster
-./build.sh fpm 8.2.36 ronisaha/php-8.2-buster
+./build.sh all 8.2.35 ferozcse/php-8.2-buster
+./build.sh fpm 8.2.36 ferozcse/php-8.2-buster
 ```
 
 ### 4. Test built images:

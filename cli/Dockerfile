@@ -13,10 +13,11 @@ RUN set -eux; \
 	elif [ -f /etc/apt/sources.list ]; then \
 		sed -i'.bak' 's/$/ contrib/' /etc/apt/sources.list; \
 	fi; \
+	apt-get update && apt-get -y upgrade; \
+	apt-get install -y wget; \
 	echo "timeout = 15" >> /etc/wgetrc; \
 	echo "tries = 2" >> /etc/wgetrc; \
-	apt-get update && apt-get -y upgrade; \
-	apt-get install -y libaio1 wget unzip \
+	apt-get install -y libaio1 unzip \
 		libicu-dev \
 		libzip-dev \
 		libyaml-dev \

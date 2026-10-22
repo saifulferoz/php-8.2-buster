@@ -1,0 +1,82 @@
+stages:
+  - build
+
+variables:
+  PHP_VERSION: "8.2.35"
+  PHP_SHORT_VERSION: "8.2"
+  IMAGE_NAME: "ferozcse/php-8.2-buster"
+  PLATFORMS: "linux/amd64,linux/arm64"
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: "/certs"
+
+.build_template:
+  image: docker:24-cli
+  services:
+    - docker:24-dind
+  stage: build
+  before_script:
+    - |
+      if [ -n "$DOCKER_PASSWORD" ] && [ -n "$DOCKER_USERNAME" ]; then
+        echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+      else
+        echo "Error: DOCKER_USERNAME and DOCKER_PASSWORD CI variables must be set in GitLab Settings > CI/CD > Variables." >&2
+        exit 1
+      fi
+    - docker run --privileged --rm tonistiigi/binfmt --install all
+    - docker buildx create --use --name gitlab-builder
+  script:
+    - |
+      echo "=========================================================="
+      echo " Building & Pushing multi-arch [${PLATFORMS}]"
+      echo " Variant: ${VARIANT}"
+      echo " Image:   ${IMAGE_NAME}:${VARIANT}-${PHP_VERSION}"
+      echo "=========================================================="
+
+      if [ -d "fonts" ] && [ ! -d "$VARIANT/fonts" ]; then
+        cp -r fonts "$VARIANT/"
+      fi
+
+      EXTRA_TAGS=""
+      if [ "$VARIANT" = "fpm" ]; then
+        EXTRA_TAGS="--tag ${IMAGE_NAME}:latest"
+      fi
+
+      docker buildx build "$VARIANT" \
+        --file "$VARIANT/Dockerfile" \
+        --platform "$PLATFORMS" \
+        --build-arg PHP_VERSION="$PHP_VERSION" \
+        --tag "${IMAGE_NAME}:${VARIANT}-${PHP_VERSION}" \
+        --tag "${IMAGE_NAME}:${VARIANT}-${PHP_SHORT_VERSION}" \
+        --tag "${IMAGE_NAME}:${VARIANT}" \
+        $EXTRA_TAGS \
+        --push
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+    - if: '$CI_COMMIT_BRANCH =~ /^8\.2/'
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+
+build:fpm:
+  extends: .build_template
+  variables:
+    VARIANT: "fpm"
+
+build:apache:
+  extends: .build_template
+  variables:
+    VARIANT: "apache"
+
+build:cli:
+  extends: .build_template
+  variables:
+    VARIANT: "cli"
+
+build:supervisor:
+  extends: .build_template
+  variables:
+    VARIANT: "supervisor"
+
+build:dev:
+  extends: .build_template
+  variables:
+    VARIANT: "dev"

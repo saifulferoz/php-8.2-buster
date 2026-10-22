@@ -63,8 +63,6 @@ RUN set -eux; \
 		soap \
 		zip \
 		sockets; \
-	echo 'yes,yes' | pecl install redis; \
-	docker-php-ext-enable redis; \
 	cd /tmp; \
 	ARCH="$(dpkg --print-architecture)"; \
 	case "$ARCH" in \
@@ -99,7 +97,7 @@ RUN set -eux; \
 	docker-php-ext-enable oci8 xdebug mongodb; \
 	curl -L https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions > /usr/local/bin/install-php-extensions; \
 	chmod +x /usr/local/bin/install-php-extensions; \
-	install-php-extensions gd imagick amqp; \
+	install-php-extensions gd imagick amqp redis; \
 	rm -f /usr/local/bin/install-php-extensions; \
 	\
 	docker-php-source delete; \

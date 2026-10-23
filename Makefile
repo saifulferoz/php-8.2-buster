@@ -1,8 +1,8 @@
 PHP_VERSION ?= 8.2.35
 IMAGE_NAME ?= ferozcse/php-8.2-buster
-VARIANTS = apache cli fpm supervisor dev
+VARIANTS = apache cli fpm supervisor dev fpm-apm
 
-.PHONY: all build build-apache build-cli build-fpm build-dev build-supervisor push push-all test help
+.PHONY: all build build-apache build-cli build-fpm build-dev build-supervisor build-fpm-apm push push-all push-fpm-apm test help
 
 all: build
 
@@ -33,6 +33,9 @@ build-dev:
 build-supervisor:
 	@./build.sh supervisor $(PHP_VERSION) $(IMAGE_NAME)
 
+build-fpm-apm:
+	@./build.sh fpm-apm $(PHP_VERSION) $(IMAGE_NAME)
+
 push:
 	@./build.sh push-all $(PHP_VERSION) $(IMAGE_NAME)
 
@@ -50,6 +53,9 @@ push-dev:
 
 push-supervisor:
 	@./build.sh push-variant supervisor $(PHP_VERSION) $(IMAGE_NAME)
+
+push-fpm-apm:
+	@./build.sh push-variant fpm-apm $(PHP_VERSION) $(IMAGE_NAME)
 
 test:
 	@echo "=== Checking extensions for $(IMAGE_NAME):fpm-$(PHP_VERSION) ==="

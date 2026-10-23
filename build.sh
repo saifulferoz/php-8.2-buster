@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-VARIANTS=("fpm" "apache" "cli" "supervisor" "dev")
+VARIANTS=("fpm" "apache" "cli" "supervisor" "dev" "fpm-apm")
 ACTION="${1:-all}"
 PHP_VERSION="${2:-8.2.35}"
 IMAGE_NAME="${3:-ferozcse/php-8.2-buster}"

@@ -37,6 +37,7 @@ All images include:
 | `apache`, `apache-8.2`, `apache-8.2.35` | `php:${PHP_VERSION}-apache-bookworm` | Apache base with `mod_rewrite`, `LimitRequestFieldSize`, DocumentRoot at `/var/www/public` |
 | `dev`, `dev-8.2`, `dev-8.2.35` | `php:${PHP_VERSION}-apache-bookworm` | Apache base with `xdebug` enabled |
 | `supervisor`, `supervisor-8.2`, `supervisor-8.2.35` | `php:${PHP_VERSION}-cli-bookworm` | CLI base with `supervisord` installed and set as container ENTRYPOINT |
+| `fpm-apm`, `fpm-apm-8.2`, `fpm-apm-8.2.35` | `ferozcse/php-8.2-buster:fpm-${PHP_VERSION}` | FPM base with official **Elastic APM PHP Agent** (`elastic_apm`) installed and configured |
 
 ---
 

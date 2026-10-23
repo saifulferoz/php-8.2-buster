@@ -41,12 +41,9 @@ RUN set -eux; \
 	ttf-mscorefonts-installer \
 	; \
 	\
-	export MAKEFLAGS="-j$(nproc)"; \
-	pecl install apcu; \
-	pecl install yaml; \
-	pecl install igbinary; \
-	pecl install mongodb; \
-	docker-php-ext-enable apcu yaml igbinary mongodb; \
+	curl -sSL https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions -o /usr/local/bin/install-php-extensions; \
+	chmod +x /usr/local/bin/install-php-extensions; \
+	install-php-extensions apcu yaml igbinary mongodb; \
 	docker-php-ext-install -j$(nproc) iconv; \
 	docker-php-ext-configure intl; \
 	docker-php-ext-install -j$(nproc) intl; \
@@ -93,8 +90,6 @@ RUN set -eux; \
 	ldconfig; \
 	echo 'instantclient,/usr/lib/instantclient' | pecl install oci8; \
 	docker-php-ext-enable oci8; \
-	curl -L https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions > /usr/local/bin/install-php-extensions; \
-	chmod +x /usr/local/bin/install-php-extensions; \
 	install-php-extensions gd imagick amqp redis; \
 	rm -f /usr/local/bin/install-php-extensions; \
 	\

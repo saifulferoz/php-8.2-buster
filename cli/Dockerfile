@@ -43,11 +43,9 @@ RUN set -eux; \
 	\
 	curl -sL https://deb.nodesource.com/setup_18.x  | bash - ; \
 	apt-get -y install nodejs; \
-	export MAKEFLAGS="-j$(nproc)"; \
-	pecl install apcu; \
-	pecl install yaml; \
-	pecl install igbinary; \
-	docker-php-ext-enable apcu yaml igbinary; \
+	curl -sSL https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions -o /usr/local/bin/install-php-extensions; \
+	chmod +x /usr/local/bin/install-php-extensions; \
+	install-php-extensions apcu yaml igbinary; \
 	docker-php-ext-install -j$(nproc) iconv; \
 	docker-php-ext-configure intl; \
 	docker-php-ext-install -j$(nproc) intl; \
@@ -93,12 +91,8 @@ RUN set -eux; \
 	echo /usr/lib/instantclient > /etc/ld.so.conf.d/oracle-instantclient.conf; \
 	ldconfig; \
 	echo 'instantclient,/usr/lib/instantclient' | pecl install oci8; \
-	pecl install xdebug; \
-	pecl install mongodb; \
-	docker-php-ext-enable oci8 xdebug mongodb; \
-	curl -L https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions > /usr/local/bin/install-php-extensions; \
-	chmod +x /usr/local/bin/install-php-extensions; \
-	install-php-extensions gd imagick amqp redis; \
+	docker-php-ext-enable oci8; \
+	install-php-extensions xdebug mongodb gd imagick amqp redis; \
 	rm -f /usr/local/bin/install-php-extensions; \
 	\
 	docker-php-source delete; \
